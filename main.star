@@ -40,11 +40,12 @@ def run(plan):
         name="wasm",
         config=ServiceConfig(
             # Using CosmWasm version v0.1.0
-            # image="ghcr.io/rollkit/cosmwasm:xxxxx",
-            image = ImageBuildSpec(
-                image_name="cosmwasm",
-                build_context_dir=".",
-            ),
+            image="ghcr.io/rollkit/cosmwasm:a661153",
+            # Use ImageBuildSpec when testing changes to Dockerfile
+            # image = ImageBuildSpec(
+            #     image_name="cosmwasm",
+            #     build_context_dir=".",
+            # ),
             cmd=["/bin/sh", "-c", " ".join(wasmd_start_cmd)],
             ports=wasmd_ports,
             public_ports=wasmd_ports,
