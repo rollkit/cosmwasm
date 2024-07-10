@@ -26,15 +26,15 @@ def run(plan):
         "start",
         "--rollkit.aggregator",
         "--rollkit.da_address {0}".format(da_address),
-        "--rpc.laddr tcp://127.0.0.1:{0}".format(rpc_port_number),
-        "--grpc.address 127.0.0.1:{0}".format(grpc_port_number),
+        "--rpc.laddr tcp://0.0.0.0:{0}".format(rpc_port_number),
+        "--grpc.address 0.0.0.0:{0}".format(grpc_port_number),
         "--p2p.laddr 0.0.0.0:{0}".format(p2p_port_number),
         "--minimum-gas-prices='0.025uwasm'",
     ]
     wasmd_ports = {
         "rpc-laddr": defaultPortSpec(rpc_port_number),
-        # "grpc-addr": defaultPortSpec(grpc_port_number),
-        # "p2p-laddr": defaultPortSpec(p2p_port_number),
+        "grpc-addr": defaultPortSpec(grpc_port_number),
+        "p2p-laddr": defaultPortSpec(p2p_port_number),
     }
     wasm = plan.add_service(
         name="wasm",
@@ -50,7 +50,7 @@ def run(plan):
             public_ports=wasmd_ports,
             ready_conditions=ReadyCondition(
                 recipe=ExecRecipe(
-                    command=["wasmd", "status", "-n tcp://localhost:{0}".format(rpc_port_number)],
+                    command=["wasmd", "status", "-n", "tcp://127.0.0.1:{0}".format(rpc_port_number)],
                     extract={
                         "output": "fromjson | .node_info.network",
                     },
@@ -59,7 +59,7 @@ def run(plan):
                 assertion="==",
                 target_value="localwasm",
                 interval="1s",
-                timeout="1m",
+                timeout="10s",
             ),
         ),
     )
