@@ -14,8 +14,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     curl \
     jq \
-    ranger \
-    vim \
     libc6 \
     ca-certificates \
     && apt-get clean \
@@ -51,14 +49,17 @@ RUN sed -i '/wasmd start/s/^/#/' init.sh
 RUN bash init.sh
 
 # Stage 2: Create a minimal runtime image
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # Install only the necessary runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     curl \
+    ranger \
     jq \
+    vim \
     ca-certificates \
+    libc6 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root
@@ -66,11 +67,15 @@ WORKDIR /root
 # Copy the wasmd binary from the build stage
 COPY --from=build-env /go/bin/wasmd /usr/bin/wasmd
 
+# Ensure the wasmd binary is executable
+RUN chmod +x /usr/bin/wasmd
+
 # Copy the .wasmd directory from the build stage
 COPY --from=build-env /root/.wasmd /root/.wasmd
 
-# Ensure the wasmd binary is executable
-RUN chmod +x /usr/bin/wasmd
+# Copy over wasmd depenendencies
+RUN mkdir -p /go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.5.0
+COPY --from=build-env /go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.5.0/ /go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.5.0/
 
 EXPOSE 36657 36656 9290
 

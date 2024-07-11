@@ -4,6 +4,7 @@
 
 da_node = import_module("github.com/rollkit/local-da/main.star@v0.3.0")
 
+
 def run(plan):
     ##########
     # DA
@@ -40,7 +41,7 @@ def run(plan):
         name="wasm",
         config=ServiceConfig(
             # Using CosmWasm version v0.1.0
-            image="ghcr.io/rollkit/cosmwasm:a661153",
+            image="ghcr.io/rollkit/cosmwasm:ad0e9e4",
             # Use ImageBuildSpec when testing changes to Dockerfile
             # image = ImageBuildSpec(
             #     image_name="cosmwasm",
@@ -51,7 +52,12 @@ def run(plan):
             public_ports=wasmd_ports,
             ready_conditions=ReadyCondition(
                 recipe=ExecRecipe(
-                    command=["wasmd", "status", "-n", "tcp://127.0.0.1:{0}".format(rpc_port_number)],
+                    command=[
+                        "wasmd",
+                        "status",
+                        "-n",
+                        "tcp://127.0.0.1:{0}".format(rpc_port_number),
+                    ],
                     extract={
                         "output": "fromjson | .node_info.network",
                     },
@@ -69,6 +75,7 @@ def run(plan):
         wasm.ip_address, wasm.ports["rpc-laddr"].number
     )
     plan.print("CosmWasm service is available at {0}".format(wasm_address))
+
 
 def defaultPortSpec(port_number):
     return PortSpec(
