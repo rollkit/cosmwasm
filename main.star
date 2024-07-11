@@ -41,7 +41,7 @@ def run(plan):
         name="wasm",
         config=ServiceConfig(
             # Using CosmWasm version v0.1.0
-            image="ghcr.io/rollkit/cosmwasm:3b5a25b",
+            image="ghcr.io/rollkit/cosmwasm:v0.1.0",
             # Use ImageBuildSpec when testing changes to Dockerfile
             # image = ImageBuildSpec(
             #     image_name="cosmwasm",
