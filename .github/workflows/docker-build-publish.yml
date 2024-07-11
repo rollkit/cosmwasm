@@ -18,3 +18,12 @@ jobs:
     with:
       dockerfile: Dockerfile
     secrets: inherit
+
+  docker-build-contract:
+    permissions:
+      contents: write
+      packages: write
+    uses: rollkit/.github/.github/workflows/reusable_dockerfile_pipeline.yml@v0.4.1
+    with:
+      dockerfile: Dockerfile.contract
+    secrets: inherit
