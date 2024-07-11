@@ -1,5 +1,5 @@
 # Stage 1: Build the contract using Rust
-FROM rust:1.64 as builder
+FROM rust:1.79 as builder
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -15,7 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN rustup target add wasm32-unknown-unknown
 
 # Clone the cw-contracts repository
-RUN git clone https://github.com/InterWasm/cw-contracts
+RUN git clone https://github.com/InterWasm/cw-contracts && \
+	cd cw-contracts && \
+	git checkout v0.11.0
 
 # Navigate to the nameservice contract directory
 WORKDIR /cw-contracts/contracts/nameservice
