@@ -1,0 +1,38 @@
+# Stage 1: Build the contract using Rust
+FROM rust:1.79 as builder
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	curl \
+	git \
+	bash \
+	build-essential \
+	libssl-dev \
+	ca-certificates \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set up Rust environment and add wasm target
+RUN rustup target add wasm32-unknown-unknown
+
+# Clone the cw-contracts repository
+RUN git clone https://github.com/InterWasm/cw-contracts && \
+	cd cw-contracts && \
+	git checkout v0.11.0
+
+# Navigate to the nameservice contract directory
+WORKDIR /cw-contracts/contracts/nameservice
+
+# Compile the contract to wasm
+RUN cargo wasm
+
+# Stage 2: Create a minimal runtime image
+FROM alpine:3.20
+
+# Install only the necessary runtime dependencies
+RUN apk add --no-cache bash curl ranger vim
+
+# Copy the nameservice directory from the builder stage
+COPY --from=builder /cw-contracts/contracts/nameservice /root/cw-contracts/contracts/nameservice
+
+# Keep the container running
+CMD tail -F /dev/null
