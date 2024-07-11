@@ -26,4 +26,5 @@ jobs:
     uses: rollkit/.github/.github/workflows/reusable_dockerfile_pipeline.yml@v0.4.1
     with:
       dockerfile: Dockerfile.contract
+      packageName: contract
     secrets: inherit
