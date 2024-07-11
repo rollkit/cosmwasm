@@ -1,0 +1,4 @@
+name: github.com/rollkit/cosmwasm
+description: |-
+  Kurtosis package for a Rollkit CosmWasm rollup
+replace: {}
